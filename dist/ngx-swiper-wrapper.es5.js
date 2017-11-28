@@ -142,7 +142,8 @@ var SwiperConfig = (function () {
         if (config === void 0) { config = {}; }
         target = target || this;
         for (var /** @type {?} */ key in config) {
-            if (config[key] && !Array.isArray(config[key]) && typeof config[key] === 'object') {
+            if (config[key] != null && !(Array.isArray(config[key])) &&
+                typeof config[key] === 'object' && !(config[key] instanceof HTMLElement)) {
                 target[key] = {};
                 this.assign(config[key], target[key]);
             }
@@ -424,7 +425,7 @@ var SwiperDirective = (function () {
         var _this = this;
         if (this.instance) {
             this.zone.runOutsideAngular(function () {
-                _this.instance.slidePrev(!silent, speed);
+                _this.instance.slidePrev(speed, !silent);
             });
         }
     };
@@ -442,7 +443,7 @@ var SwiperDirective = (function () {
         var _this = this;
         if (this.instance) {
             this.zone.runOutsideAngular(function () {
-                _this.instance.slideNext(!silent, speed);
+                _this.instance.slideNext(speed, !silent);
             });
         }
     };

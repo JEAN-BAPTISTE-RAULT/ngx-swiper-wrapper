@@ -272,7 +272,7 @@ var SwiperDirective = (function () {
         var _this = this;
         if (this.instance) {
             this.zone.runOutsideAngular(function () {
-                _this.instance.slidePrev(!silent, speed);
+                _this.instance.slidePrev(speed, !silent);
             });
         }
     };
@@ -290,7 +290,7 @@ var SwiperDirective = (function () {
         var _this = this;
         if (this.instance) {
             this.zone.runOutsideAngular(function () {
-                _this.instance.slideNext(!silent, speed);
+                _this.instance.slideNext(speed, !silent);
             });
         }
     };
