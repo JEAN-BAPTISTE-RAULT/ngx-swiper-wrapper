@@ -2,6 +2,7 @@ import { InjectionToken } from '@angular/core';
 export declare const SWIPER_CONFIG: InjectionToken<SwiperConfigInterface>;
 export declare const SwiperEvents: string[];
 export interface SwiperConfigInterface {
+    init?: boolean;
     initialSlide?: number;
     direction?: string;
     speed?: number;
@@ -15,6 +16,7 @@ export interface SwiperConfigInterface {
     uniqueNavElements?: boolean;
     effect?: string;
     runCallbacksOnInit?: boolean;
+    watchOverflow?: boolean;
     spaceBetween?: number;
     slidesPerView?: number | 'auto';
     slidesPerColumn?: number;
@@ -43,10 +45,12 @@ export interface SwiperConfigInterface {
     passiveListeners?: boolean;
     resistance?: boolean;
     resistanceRatio?: number;
+    preventInteractionOnTransition?: boolean;
     allowSlidePrev?: boolean;
     allowSlideNext?: boolean;
     noSwiping?: boolean;
     noSwipingClass?: string;
+    noSwipingSelector?: string;
     swipeHandler?: string | HTMLElement;
     preventClicks?: boolean;
     preventClicksPropagation?: boolean;
@@ -86,18 +90,18 @@ export interface SwiperConfigInterface {
     cubeEffect?: SwiperCubeEffectInterface;
     coverflowEffect?: SwiperCoverflowEffectInterface;
     parallax?: boolean;
-    keyboard?: boolean;
     a11y?: boolean | SwiperA11YInterface;
     lazy?: boolean | SwiperLazyInterface;
     zoom?: boolean | SwiperZoomInterface;
     history?: boolean | SwiperHistoryInterface;
     virtual?: boolean | SwiperVirtualInterface;
     autoplay?: boolean | SwiperAutoplayInterface;
+    keyboard?: boolean | SwiperKeyboardInterface;
     scrollbar?: boolean | SwiperScrollbarInterface;
+    mousewheel?: boolean | SwiperMousewheelInterface;
     controller?: boolean | SwiperControllerInterface;
     navigation?: boolean | SwiperNavigationInterface;
     pagination?: boolean | SwiperPaginationInterface;
-    mousewheel?: boolean | SwiperMousewheelInterface;
     hashNavigation?: boolean | SwiperHashNavigationInterface;
 }
 export interface SwiperA11YInterface {
@@ -134,10 +138,16 @@ export interface SwiperVirtualInterface {
     renderSlide?: SwiperRenderSlideFunction;
     renderExternal?: SwiperRenderExternalFunction;
 }
+export interface SwiperKeyboardInterface {
+    enabled?: boolean;
+    onlyInViewport?: boolean;
+}
 export interface SwiperAutoplayInterface {
     delay?: number;
-    stopOnLast?: boolean;
+    stopOnLastSlide?: boolean;
     disableOnInteraction?: boolean;
+    reverseDirection?: boolean;
+    waitForTransition?: boolean;
 }
 export interface SwiperScrollbarInterface {
     el?: string | HTMLElement;
@@ -163,6 +173,7 @@ export interface SwiperPaginationInterface {
     type?: 'bullets' | 'fraction' | 'progressbar' | 'custom';
     bulletElement?: string;
     dynamicBullets?: boolean;
+    dynamicMainBullets?: number;
     hideOnClick?: boolean;
     clickable?: boolean;
     renderBullet?: SwiperRenderBulletFunction;
@@ -209,15 +220,11 @@ export interface SwiperCoverflowEffectInterface {
     modifier?: number;
     slideShadows?: boolean;
 }
-export interface SwiperBreakpointInterface {
-    spaceBetween?: number;
-    slidesPerView?: number;
-    slidesPerGroup?: number;
-}
 export interface SwiperBreakpointsInterface {
-    [size: number]: SwiperBreakpointInterface;
+    [size: number]: SwiperConfigInterface;
 }
 export declare class SwiperConfig implements SwiperConfigInterface {
+    init: boolean;
     initialSlide: number;
     direction: string;
     speed: number;
@@ -231,6 +238,7 @@ export declare class SwiperConfig implements SwiperConfigInterface {
     uniqueNavElements: boolean;
     effect: string;
     runCallbacksOnInit: boolean;
+    watchOverflow: boolean;
     spaceBetween: number;
     slidesPerView: number | 'auto';
     slidesPerColumn: number;
@@ -259,10 +267,12 @@ export declare class SwiperConfig implements SwiperConfigInterface {
     passiveListeners: boolean;
     resistance: boolean;
     resistanceRatio: number;
+    preventInteractionOnTransition: boolean;
     allowSlidePrev: boolean;
     allowSlideNext: boolean;
     noSwiping: boolean;
     noSwipingClass: string;
+    noSwipingSelector: string;
     swipeHandler: string | HTMLElement;
     preventClicks: boolean;
     preventClicksPropagation: boolean;
@@ -302,18 +312,18 @@ export declare class SwiperConfig implements SwiperConfigInterface {
     cubeEffect: any;
     coverflowEffect: any;
     parallax: boolean;
-    keyboard: boolean;
     a11y: boolean | any;
     lazy: boolean | any;
     zoom: boolean | any;
     history: boolean | any;
     virtual: boolean | any;
     autoplay: boolean | any;
+    keyboard: boolean | any;
     scrollbar: boolean | any;
+    mousewheel: boolean | any;
     controller: boolean | any;
     navigation: boolean | any;
     pagination: boolean | any;
-    mousewheel: boolean | any;
     hashNavigation: boolean | any;
     constructor(config?: SwiperConfigInterface);
     assign(config?: SwiperConfigInterface | any, target?: any): void;

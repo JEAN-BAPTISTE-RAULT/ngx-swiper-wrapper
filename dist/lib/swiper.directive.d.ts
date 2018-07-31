@@ -1,6 +1,7 @@
-import { OnInit, DoCheck, OnChanges, EventEmitter, NgZone, ElementRef, SimpleChanges, KeyValueDiffers } from '@angular/core';
+import { EventEmitter, AfterViewInit, DoCheck, OnDestroy, OnChanges, NgZone, ElementRef, SimpleChanges, KeyValueDiffers } from '@angular/core';
 import { SwiperConfigInterface } from './swiper.interfaces';
-export declare class SwiperDirective implements OnInit, DoCheck, OnChanges {
+export declare class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnChanges {
+    private platformId;
     private zone;
     private elementRef;
     private differs;
@@ -17,6 +18,7 @@ export declare class SwiperDirective implements OnInit, DoCheck, OnChanges {
     S_SCROLL: EventEmitter<any>;
     S_PROGRESS: EventEmitter<any>;
     S_RESIZE: EventEmitter<any>;
+    S_BREAKPOINT: EventEmitter<any>;
     S_BEFORERESIZE: EventEmitter<any>;
     S_KEYPRESS: EventEmitter<any>;
     S_SLIDERMOVE: EventEmitter<any>;
@@ -50,12 +52,14 @@ export declare class SwiperDirective implements OnInit, DoCheck, OnChanges {
     S_SLIDENEXTTRANSITIONSTART: EventEmitter<any>;
     S_SLIDECHANGETRANSITIONEND: EventEmitter<any>;
     S_SLIDECHANGETRANSITIONSTART: EventEmitter<any>;
-    constructor(zone: NgZone, elementRef: ElementRef, differs: KeyValueDiffers, defaults: SwiperConfigInterface);
-    ngOnInit(): void;
+    constructor(platformId: Object, zone: NgZone, elementRef: ElementRef, differs: KeyValueDiffers, defaults: SwiperConfigInterface);
+    ngAfterViewInit(): void;
     ngDoCheck(): void;
+    ngOnDestroy(): void;
     destroy(): void;
     ngOnChanges(changes: SimpleChanges): void;
     swiper(): any;
+    init(): void;
     update(): void;
     getIndex(real?: boolean): any;
     setIndex(index: number, speed?: number, silent?: boolean): void;

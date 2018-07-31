@@ -2,11 +2,11 @@
  * @fileoverview added by tsickle
  * @suppress {checkTypes} checked by tsc
  */
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { SwiperComponent } from "./swiper.component";
-import { SwiperDirective } from "./swiper.directive";
-var SwiperModule = (function () {
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { SwiperComponent } from './swiper.component';
+import { SwiperDirective } from './swiper.directive';
+var SwiperModule = /** @class */ (function () {
     function SwiperModule() {
     }
     SwiperModule.decorators = [

@@ -2,12 +2,14 @@
  * @fileoverview added by tsickle
  * @suppress {checkTypes} checked by tsc
  */
-import * as Swiper from "swiper/dist/js/swiper.js";
-import { Directive, Input, Output, EventEmitter, NgZone, ElementRef, Optional, Inject, KeyValueDiffers } from "@angular/core";
-import { SWIPER_CONFIG } from "./swiper.interfaces";
-import { SwiperEvents, SwiperConfig } from "./swiper.interfaces";
-var SwiperDirective = (function () {
-    function SwiperDirective(zone, elementRef, differs, defaults) {
+import * as Swiper from 'swiper/dist/js/swiper.js';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID, Input, Output, EventEmitter, Directive, NgZone, ElementRef, Optional, Inject, KeyValueDiffers } from '@angular/core';
+import { SWIPER_CONFIG } from './swiper.interfaces';
+import { SwiperEvents, SwiperConfig } from './swiper.interfaces';
+var SwiperDirective = /** @class */ (function () {
+    function SwiperDirective(platformId, zone, elementRef, differs, defaults) {
+        this.platformId = platformId;
         this.zone = zone;
         this.elementRef = elementRef;
         this.differs = differs;
@@ -19,6 +21,7 @@ var SwiperDirective = (function () {
         this.S_SCROLL = new EventEmitter();
         this.S_PROGRESS = new EventEmitter();
         this.S_RESIZE = new EventEmitter();
+        this.S_BREAKPOINT = new EventEmitter();
         this.S_BEFORERESIZE = new EventEmitter();
         this.S_KEYPRESS = new EventEmitter();
         this.S_SLIDERMOVE = new EventEmitter();
@@ -69,11 +72,14 @@ var SwiperDirective = (function () {
     /**
      * @return {?}
      */
-    SwiperDirective.prototype.ngOnInit = /**
+    SwiperDirective.prototype.ngAfterViewInit = /**
      * @return {?}
      */
     function () {
         var _this = this;
+        if (!isPlatformBrowser(this.platformId)) {
+            return;
+        }
         var /** @type {?} */ params = new SwiperConfig(this.defaults);
         params.assign(this.config); // Custom configuration
         if (params.scrollbar === true) {
@@ -92,6 +98,10 @@ var SwiperDirective = (function () {
                 nextEl: '.swiper-button-next'
             };
         }
+        if (this.disabled) {
+            params.allowSlidePrev = false;
+            params.allowSlideNext = false;
+        }
         if (this.initialIndex != null) {
             params.initialSlide = this.initialIndex;
             this.initialIndex = null;
@@ -108,7 +118,9 @@ var SwiperDirective = (function () {
         this.zone.runOutsideAngular(function () {
             _this.instance = new Swiper(_this.elementRef.nativeElement, params);
         });
-        this.S_INIT.emit(this.instance);
+        if (params.init !== false) {
+            this.S_INIT.emit(this.instance);
+        }
         // Add native Swiper event handling
         SwiperEvents.forEach(function (eventName) {
             eventName = eventName.replace('swiper', '');
@@ -145,10 +157,18 @@ var SwiperDirective = (function () {
             if (changes) {
                 this.initialIndex = this.getIndex(true);
                 this.destroy();
-                this.ngOnInit();
+                this.ngAfterViewInit();
                 this.update();
             }
         }
+    };
+    /**
+     * @return {?}
+     */
+    SwiperDirective.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
     };
     /**
      * @return {?}
@@ -160,7 +180,7 @@ var SwiperDirective = (function () {
         var _this = this;
         if (this.instance) {
             this.zone.runOutsideAngular(function () {
-                _this.instance.destroy(true, true);
+                _this.instance.destroy(true, _this.instance.initialized || false);
             });
             this.instance = null;
         }
@@ -179,12 +199,14 @@ var SwiperDirective = (function () {
             if (changes['disabled'].currentValue !== changes['disabled'].previousValue) {
                 if (changes['disabled'].currentValue === true) {
                     this.zone.runOutsideAngular(function () {
-                        _this.instance.lockSwipes();
+                        _this.destroy();
+                        _this.ngAfterViewInit();
                     });
                 }
                 else if (changes['disabled'].currentValue === false) {
                     this.zone.runOutsideAngular(function () {
-                        _this.instance.unlockSwipes();
+                        _this.destroy();
+                        _this.ngAfterViewInit();
                     });
                 }
             }
@@ -198,6 +220,20 @@ var SwiperDirective = (function () {
      */
     function () {
         return this.instance;
+    };
+    /**
+     * @return {?}
+     */
+    SwiperDirective.prototype.init = /**
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        if (this.instance) {
+            this.zone.runOutsideAngular(function () {
+                _this.instance.init();
+            });
+        }
     };
     /**
      * @return {?}
@@ -340,6 +376,7 @@ var SwiperDirective = (function () {
     ];
     /** @nocollapse */
     SwiperDirective.ctorParameters = function () { return [
+        { type: Object, decorators: [{ type: Inject, args: [PLATFORM_ID,] },] },
         { type: NgZone, },
         { type: ElementRef, },
         { type: KeyValueDiffers, },
@@ -355,6 +392,7 @@ var SwiperDirective = (function () {
         "S_SCROLL": [{ type: Output, args: ['scroll',] },],
         "S_PROGRESS": [{ type: Output, args: ['progress',] },],
         "S_RESIZE": [{ type: Output, args: ['resize',] },],
+        "S_BREAKPOINT": [{ type: Output, args: ['breakpoint',] },],
         "S_BEFORERESIZE": [{ type: Output, args: ['beforeResize',] },],
         "S_KEYPRESS": [{ type: Output, args: ['keyPress',] },],
         "S_SLIDERMOVE": [{ type: Output, args: ['sliderMove',] },],
@@ -425,6 +463,8 @@ function SwiperDirective_tsickle_Closure_declarations() {
     /** @type {?} */
     SwiperDirective.prototype.S_RESIZE;
     /** @type {?} */
+    SwiperDirective.prototype.S_BREAKPOINT;
+    /** @type {?} */
     SwiperDirective.prototype.S_BEFORERESIZE;
     /** @type {?} */
     SwiperDirective.prototype.S_KEYPRESS;
@@ -490,6 +530,8 @@ function SwiperDirective_tsickle_Closure_declarations() {
     SwiperDirective.prototype.S_SLIDECHANGETRANSITIONEND;
     /** @type {?} */
     SwiperDirective.prototype.S_SLIDECHANGETRANSITIONSTART;
+    /** @type {?} */
+    SwiperDirective.prototype.platformId;
     /** @type {?} */
     SwiperDirective.prototype.zone;
     /** @type {?} */

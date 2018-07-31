@@ -2,14 +2,18 @@
  * @fileoverview added by tsickle
  * @suppress {checkTypes} checked by tsc
  */
-import { InjectionToken } from "@angular/core";
+import { InjectionToken } from '@angular/core';
 export var /** @type {?} */ SWIPER_CONFIG = new InjectionToken('SWIPER_CONFIG');
 export var /** @type {?} */ SwiperEvents = [
     'init',
     'beforeDestroy',
     'scroll',
     'progress',
+    'keyPress',
+    'beforeResize',
+    'afterResize',
     'resize',
+    'breakpoint',
     'beforeResize',
     'keyPress',
     'sliderMove',
@@ -50,6 +54,8 @@ export var /** @type {?} */ SwiperEvents = [
 export function SwiperConfigInterface() { }
 function SwiperConfigInterface_tsickle_Closure_declarations() {
     /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.init;
+    /** @type {?|undefined} */
     SwiperConfigInterface.prototype.initialSlide;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.direction;
@@ -75,6 +81,8 @@ function SwiperConfigInterface_tsickle_Closure_declarations() {
     SwiperConfigInterface.prototype.effect;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.runCallbacksOnInit;
+    /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.watchOverflow;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.spaceBetween;
     /** @type {?|undefined} */
@@ -132,6 +140,8 @@ function SwiperConfigInterface_tsickle_Closure_declarations() {
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.resistanceRatio;
     /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.preventInteractionOnTransition;
+    /** @type {?|undefined} */
     SwiperConfigInterface.prototype.allowSlidePrev;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.allowSlideNext;
@@ -139,6 +149,8 @@ function SwiperConfigInterface_tsickle_Closure_declarations() {
     SwiperConfigInterface.prototype.noSwiping;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.noSwipingClass;
+    /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.noSwipingSelector;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.swipeHandler;
     /** @type {?|undefined} */
@@ -218,8 +230,6 @@ function SwiperConfigInterface_tsickle_Closure_declarations() {
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.parallax;
     /** @type {?|undefined} */
-    SwiperConfigInterface.prototype.keyboard;
-    /** @type {?|undefined} */
     SwiperConfigInterface.prototype.a11y;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.lazy;
@@ -232,15 +242,17 @@ function SwiperConfigInterface_tsickle_Closure_declarations() {
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.autoplay;
     /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.keyboard;
+    /** @type {?|undefined} */
     SwiperConfigInterface.prototype.scrollbar;
+    /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.mousewheel;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.controller;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.navigation;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.pagination;
-    /** @type {?|undefined} */
-    SwiperConfigInterface.prototype.mousewheel;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.hashNavigation;
 }
@@ -325,14 +337,28 @@ function SwiperVirtualInterface_tsickle_Closure_declarations() {
 /**
  * @record
  */
+export function SwiperKeyboardInterface() { }
+function SwiperKeyboardInterface_tsickle_Closure_declarations() {
+    /** @type {?|undefined} */
+    SwiperKeyboardInterface.prototype.enabled;
+    /** @type {?|undefined} */
+    SwiperKeyboardInterface.prototype.onlyInViewport;
+}
+/**
+ * @record
+ */
 export function SwiperAutoplayInterface() { }
 function SwiperAutoplayInterface_tsickle_Closure_declarations() {
     /** @type {?|undefined} */
     SwiperAutoplayInterface.prototype.delay;
     /** @type {?|undefined} */
-    SwiperAutoplayInterface.prototype.stopOnLast;
+    SwiperAutoplayInterface.prototype.stopOnLastSlide;
     /** @type {?|undefined} */
     SwiperAutoplayInterface.prototype.disableOnInteraction;
+    /** @type {?|undefined} */
+    SwiperAutoplayInterface.prototype.reverseDirection;
+    /** @type {?|undefined} */
+    SwiperAutoplayInterface.prototype.waitForTransition;
 }
 /**
  * @record
@@ -391,6 +417,8 @@ function SwiperPaginationInterface_tsickle_Closure_declarations() {
     SwiperPaginationInterface.prototype.bulletElement;
     /** @type {?|undefined} */
     SwiperPaginationInterface.prototype.dynamicBullets;
+    /** @type {?|undefined} */
+    SwiperPaginationInterface.prototype.dynamicMainBullets;
     /** @type {?|undefined} */
     SwiperPaginationInterface.prototype.hideOnClick;
     /** @type {?|undefined} */
@@ -497,25 +525,13 @@ function SwiperCoverflowEffectInterface_tsickle_Closure_declarations() {
 /**
  * @record
  */
-export function SwiperBreakpointInterface() { }
-function SwiperBreakpointInterface_tsickle_Closure_declarations() {
-    /** @type {?|undefined} */
-    SwiperBreakpointInterface.prototype.spaceBetween;
-    /** @type {?|undefined} */
-    SwiperBreakpointInterface.prototype.slidesPerView;
-    /** @type {?|undefined} */
-    SwiperBreakpointInterface.prototype.slidesPerGroup;
-}
-/**
- * @record
- */
 export function SwiperBreakpointsInterface() { }
 function SwiperBreakpointsInterface_tsickle_Closure_declarations() {
     /* TODO: handle strange member:
-    [size: number]: SwiperBreakpointInterface
+    [size: number]: SwiperConfigInterface
     */
 }
-var SwiperConfig = (function () {
+var SwiperConfig = /** @class */ (function () {
     function SwiperConfig(config) {
         if (config === void 0) { config = {}; }
         this.assign(config);
@@ -534,8 +550,8 @@ var SwiperConfig = (function () {
         if (config === void 0) { config = {}; }
         target = target || this;
         for (var /** @type {?} */ key in config) {
-            if (config[key] != null && !(Array.isArray(config[key])) &&
-                typeof config[key] === 'object' && !(config[key] instanceof HTMLElement)) {
+            if (config[key] != null && !Array.isArray(config[key]) && typeof config[key] === 'object' &&
+                (typeof HTMLElement === 'undefined' || !(config[key] instanceof HTMLElement))) {
                 target[key] = {};
                 this.assign(config[key], target[key]);
             }
@@ -548,6 +564,8 @@ var SwiperConfig = (function () {
 }());
 export { SwiperConfig };
 function SwiperConfig_tsickle_Closure_declarations() {
+    /** @type {?} */
+    SwiperConfig.prototype.init;
     /** @type {?} */
     SwiperConfig.prototype.initialSlide;
     /** @type {?} */
@@ -574,6 +592,8 @@ function SwiperConfig_tsickle_Closure_declarations() {
     SwiperConfig.prototype.effect;
     /** @type {?} */
     SwiperConfig.prototype.runCallbacksOnInit;
+    /** @type {?} */
+    SwiperConfig.prototype.watchOverflow;
     /** @type {?} */
     SwiperConfig.prototype.spaceBetween;
     /** @type {?} */
@@ -631,6 +651,8 @@ function SwiperConfig_tsickle_Closure_declarations() {
     /** @type {?} */
     SwiperConfig.prototype.resistanceRatio;
     /** @type {?} */
+    SwiperConfig.prototype.preventInteractionOnTransition;
+    /** @type {?} */
     SwiperConfig.prototype.allowSlidePrev;
     /** @type {?} */
     SwiperConfig.prototype.allowSlideNext;
@@ -638,6 +660,8 @@ function SwiperConfig_tsickle_Closure_declarations() {
     SwiperConfig.prototype.noSwiping;
     /** @type {?} */
     SwiperConfig.prototype.noSwipingClass;
+    /** @type {?} */
+    SwiperConfig.prototype.noSwipingSelector;
     /** @type {?} */
     SwiperConfig.prototype.swipeHandler;
     /** @type {?} */
@@ -717,8 +741,6 @@ function SwiperConfig_tsickle_Closure_declarations() {
     /** @type {?} */
     SwiperConfig.prototype.parallax;
     /** @type {?} */
-    SwiperConfig.prototype.keyboard;
-    /** @type {?} */
     SwiperConfig.prototype.a11y;
     /** @type {?} */
     SwiperConfig.prototype.lazy;
@@ -731,15 +753,17 @@ function SwiperConfig_tsickle_Closure_declarations() {
     /** @type {?} */
     SwiperConfig.prototype.autoplay;
     /** @type {?} */
+    SwiperConfig.prototype.keyboard;
+    /** @type {?} */
     SwiperConfig.prototype.scrollbar;
+    /** @type {?} */
+    SwiperConfig.prototype.mousewheel;
     /** @type {?} */
     SwiperConfig.prototype.controller;
     /** @type {?} */
     SwiperConfig.prototype.navigation;
     /** @type {?} */
     SwiperConfig.prototype.pagination;
-    /** @type {?} */
-    SwiperConfig.prototype.mousewheel;
     /** @type {?} */
     SwiperConfig.prototype.hashNavigation;
 }

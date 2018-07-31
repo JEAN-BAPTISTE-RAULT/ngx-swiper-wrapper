@@ -1,13 +1,13 @@
-import { OnInit, EventEmitter, NgZone, Renderer2, ElementRef } from '@angular/core';
+import { AfterViewInit, OnDestroy, EventEmitter, NgZone, ElementRef } from '@angular/core';
 import { SwiperDirective } from './swiper.directive';
 import { SwiperConfigInterface } from './swiper.interfaces';
-export declare class SwiperComponent implements OnInit {
+export declare class SwiperComponent implements AfterViewInit, OnDestroy {
+    private platformId;
     private zone;
-    private renderer;
-    private elementRef;
     private defaults;
     private mo;
     swiperConfig: any;
+    paginationBackup: any;
     paginationConfig: any;
     index: number;
     disabled: boolean;
@@ -23,6 +23,7 @@ export declare class SwiperComponent implements OnInit {
     S_SCROLL: EventEmitter<any>;
     S_PROGRESS: EventEmitter<any>;
     S_RESIZE: EventEmitter<any>;
+    S_BREAKPOINT: EventEmitter<any>;
     S_BEFORERESIZE: EventEmitter<any>;
     S_KEYPRESS: EventEmitter<any>;
     S_SLIDERMOVE: EventEmitter<any>;
@@ -56,8 +57,9 @@ export declare class SwiperComponent implements OnInit {
     S_SLIDENEXTTRANSITIONSTART: EventEmitter<any>;
     S_SLIDECHANGETRANSITIONEND: EventEmitter<any>;
     S_SLIDECHANGETRANSITIONSTART: EventEmitter<any>;
-    constructor(zone: NgZone, renderer: Renderer2, elementRef: ElementRef, defaults: SwiperConfigInterface);
-    ngOnInit(): void;
+    constructor(platformId: Object, zone: NgZone, defaults: SwiperConfigInterface);
+    ngAfterViewInit(): void;
+    ngOnDestroy(): void;
     destroy(): void;
     getConfig(): SwiperConfigInterface;
     private updateClasses();
