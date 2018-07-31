@@ -1,23 +1,26 @@
-import { Component, ViewEncapsulation,
-  OnInit, OnDestroy, Input, Output, HostBinding, EventEmitter, ViewChild,
-  NgZone, Renderer2, ElementRef, Optional, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID,
+  Component, AfterViewInit, OnDestroy, Input, Output, EventEmitter, ViewChild,
+  NgZone, ElementRef, Optional, Inject, ViewEncapsulation } from '@angular/core';
 
 import { SWIPER_CONFIG } from './swiper.interfaces';
 
 import { SwiperDirective } from './swiper.directive';
 
-import { SwiperConfig, SwiperConfigInterface, SwiperRenderBulletFunction } from './swiper.interfaces';
+import { SwiperConfig, SwiperConfigInterface } from './swiper.interfaces';
 
 @Component({
   selector: 'swiper',
+  exportAs: 'ngxSwiper',
   templateUrl: './lib/swiper.component.html',
   styleUrls: [ './lib/swiper.component.css' ],
   encapsulation: ViewEncapsulation.None
 })
-export class SwiperComponent implements OnInit {
+export class SwiperComponent implements AfterViewInit, OnDestroy {
   private mo: any;
 
   public swiperConfig: any;
+  public paginationBackup: any;
   public paginationConfig: any;
 
   @Input() index: number = null;
@@ -51,6 +54,7 @@ export class SwiperComponent implements OnInit {
   @Output('progress'                   ) S_PROGRESS                       = new EventEmitter<any>();
 
   @Output('resize'                     ) S_RESIZE                         = new EventEmitter<any>();
+  @Output('breakpoint'                 ) S_BREAKPOINT                     = new EventEmitter<any>();
   @Output('beforeResize'               ) S_BEFORERESIZE                   = new EventEmitter<any>();
 
   @Output('keyPress'                   ) S_KEYPRESS                       = new EventEmitter<any>();
@@ -93,25 +97,34 @@ export class SwiperComponent implements OnInit {
   @Output('slideChangeTransitionEnd'   ) S_SLIDECHANGETRANSITIONEND       = new EventEmitter<any>();
   @Output('slideChangeTransitionStart' ) S_SLIDECHANGETRANSITIONSTART     = new EventEmitter<any>();
 
-  constructor(private zone: NgZone, private renderer: Renderer2, private elementRef: ElementRef,
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone,
     @Optional() @Inject(SWIPER_CONFIG) private defaults: SwiperConfigInterface) {}
 
-  ngOnInit() {
+  ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     this.zone.runOutsideAngular(() => {
       this.updateClasses();
 
-      this.mo = new MutationObserver((mutations) => {
-        this.updateClasses();
-      });
+      if (typeof MutationObserver !== 'undefined') {
+        this.mo = new MutationObserver((mutations) => {
+          this.updateClasses();
+        });
 
-      this.mo.observe(this.swiperSlides.nativeElement, { childList: true });
+        this.mo.observe(this.swiperSlides.nativeElement, { childList: true });
+      }
     });
   }
 
-  destroy() {
-    this.directiveRef.destroy();
+  ngOnDestroy() {
     if (this.mo) {
       this.mo.disconnect();
+    }
+
+    if (this.config && this.paginationBackup) {
+      this.config.pagination = this.paginationBackup;
     }
   }
 
@@ -122,9 +135,14 @@ export class SwiperComponent implements OnInit {
 
     if (this.swiperConfig.pagination === true ||
        (this.swiperConfig.pagination && typeof this.swiperConfig.pagination === 'object' &&
+       (!this.swiperConfig.pagination.type || this.swiperConfig.pagination.type === 'bullets') &&
        !this.swiperConfig.pagination.renderBullet && this.swiperConfig.pagination.el === '.swiper-pagination'))
     {
+      this.config = this.config || {};
+
       if (!this.paginationConfig) {
+        this.paginationBackup = this.config.pagination;
+
         this.paginationConfig = {
           el: '.swiper-pagination',
 

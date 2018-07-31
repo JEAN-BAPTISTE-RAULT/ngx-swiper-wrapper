@@ -2,11 +2,17 @@
 
 <a href="https://badge.fury.io/js/ngx-swiper-wrapper"><img src="https://badge.fury.io/js/ngx-swiper-wrapper.svg" align="right" alt="npm version" height="18"></a>
 
-This is an Angular wrapper library for the [Swiper](http://idangero.us/swiper/). To use this library you should get familiar with the [Swiper documentation](http://idangero.us/swiper/api/) as well, this documentation only explains details specific to this wrapper.
+This is an Angular wrapper library for the [Swiper](http://idangero.us/swiper/). To use this library you should get familiar with the Swiper documentation as well since this documentation only explains details specific to this wrapper.
 
 This documentation is for the latest 5.x.x version which requires Angular 5. For Angular 4 you need to use the latest 4.x.x version. Documentation for the 4.x.x can be found from <a href="https://github.com/zefoy/ngx-swiper-wrapper/tree/4.x.x/">here</a>.
 
-See a live example application <a href="https://zefoy.github.io/ngx-swiper-wrapper/">here</a>.
+### Quick links
+
+[Example application](https://zefoy.github.io/ngx-swiper-wrapper/)
+ |
+[StackBlitz example](https://stackblitz.com/github/zefoy/ngx-swiper-wrapper/tree/master/example)
+ |
+[Swiper documentation](http://idangero.us/swiper/api/)
 
 ### Building the library
 
@@ -39,6 +45,8 @@ npm install ngx-swiper-wrapper --save
 
 ##### Load the module for your app (with global configuration):
 
+Providing the global configuration is optional and when used you should only provide the configuration in your root module.
+
 ```javascript
 import { SwiperModule } from 'ngx-swiper-wrapper';
 import { SWIPER_CONFIG } from 'ngx-swiper-wrapper';
@@ -46,8 +54,7 @@ import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
 
 const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
   direction: 'horizontal',
-  slidesPerView: 'auto',
-  keyboard: true
+  slidesPerView: 'auto'
 };
 
 @NgModule({
@@ -118,7 +125,6 @@ Swiper directive can be used in correctly structured div element with optional c
   </div>
 
   <div class="swiper-scrollbar"></div>
-
   <div class="swiper-pagination"></div>
 
   <div class="swiper-button-prev"></div>
@@ -153,13 +159,14 @@ slidesPerView           // Number of the items per view or 'auto' (Default: 1).
 centeredSlides          // Align active item on center not left (Default: false).
 ```
 
-For more detailed documentation with all the supported events / options see [Swiper documentation](http://idangero.us/swiper/api/).
+For more detailed documentation with all the supported events / options see the Swiper documentation.
 
 ##### Available control / helper functions (provided by the directive):
 
 ```javascript
 swiper()                          // Returns reference to the Swiper instance.
 
+init()                            // Starts Swiper (when init set to false).
 update()                          // Updates Swiper elements / classes / etc.
 
 getIndex(real?)                   // Returns the active or real slide index.

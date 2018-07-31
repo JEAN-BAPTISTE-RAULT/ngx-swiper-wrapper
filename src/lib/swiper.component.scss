@@ -43,6 +43,7 @@ swiper {
         .swiper-pagination-handle {
           position: relative;
 
+          display: inline-block;
           padding: 4px;
           margin: 2px;
 
@@ -50,7 +51,11 @@ swiper {
           pointer-events: all;
 
           .swiper-pagination-bullet {
+            display: inline-block;
+
             margin: 0;
+
+            pointer-events: none;
           }
 
           .swiper-pagination-bullet-last,

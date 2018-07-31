@@ -9,6 +9,7 @@
     "color-hex-case": "lower",
     "color-no-invalid-hex": true,
 
+    "font-family-no-missing-generic-family-keyword": null,
     "function-calc-no-unspaced-operator": true,
     "function-comma-space-after": "always-single-line",
     "function-comma-space-before": "never",
@@ -49,6 +50,8 @@
       }
     ],
 
+    "at-rule-no-unknown": null,
+
     "declaration-block-no-duplicate-properties": true,
     "declaration-block-trailing-semicolon": "always",
     "declaration-block-single-line-max-declarations": 1,
@@ -78,6 +81,8 @@
     "selector-max-id": 0,
 
     "declaration-empty-line-before": null,
+
+    "no-descending-specificity": null,
 
     "order/properties-order": [
       [
@@ -174,6 +179,7 @@
             "white-space",
             "text-align",
             "text-shadow",
+            "text-decoration",
             "text-transform",
             "text-overflow",
             "letter-spacing",
