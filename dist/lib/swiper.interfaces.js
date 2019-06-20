@@ -1,21 +1,22 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { InjectionToken } from '@angular/core';
-export var /** @type {?} */ SWIPER_CONFIG = new InjectionToken('SWIPER_CONFIG');
-export var /** @type {?} */ SwiperEvents = [
+/** @type {?} */
+export var SWIPER_CONFIG = new InjectionToken('SWIPER_CONFIG');
+/** @type {?} */
+export var SwiperEvents = [
     'init',
     'beforeDestroy',
     'scroll',
     'progress',
     'keyPress',
-    'beforeResize',
-    'afterResize',
     'resize',
     'breakpoint',
+    'zoomChange',
     'beforeResize',
-    'keyPress',
+    'afterResize',
     'sliderMove',
     'slideChange',
     'setTranslate',
@@ -32,6 +33,12 @@ export var /** @type {?} */ SwiperEvents = [
     'scrollDragEnd',
     'scrollDragMove',
     'scrollDragStart',
+    'navigationHide',
+    'navigationShow',
+    'paginationRender',
+    'paginationUpdate',
+    'paginationHide',
+    'paginationShow',
     'swiperTap',
     'swiperClick',
     'swiperDoubleTap',
@@ -52,7 +59,7 @@ export var /** @type {?} */ SwiperEvents = [
  * @record
  */
 export function SwiperConfigInterface() { }
-function SwiperConfigInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.init;
     /** @type {?|undefined} */
@@ -102,6 +109,8 @@ function SwiperConfigInterface_tsickle_Closure_declarations() {
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.normalizeSlideIndex;
     /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.centerInsufficientSlides;
+    /** @type {?|undefined} */
     SwiperConfigInterface.prototype.grabCursor;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.touchEventsTarget;
@@ -125,6 +134,10 @@ function SwiperConfigInterface_tsickle_Closure_declarations() {
     SwiperConfigInterface.prototype.allowTouchMove;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.threshold;
+    /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.touchStartPreventDefault;
+    /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.touchStartForcePreventDefault;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.touchMoveStopPropagation;
     /** @type {?|undefined} */
@@ -194,9 +207,13 @@ function SwiperConfigInterface_tsickle_Closure_declarations() {
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.breakpoints;
     /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.breakpointsInverse;
+    /** @type {?|undefined} */
     SwiperConfigInterface.prototype.observer;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.observeParents;
+    /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.observeSlideChildren;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.containerModifierClass;
     /** @type {?|undefined} */
@@ -236,6 +253,8 @@ function SwiperConfigInterface_tsickle_Closure_declarations() {
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.zoom;
     /** @type {?|undefined} */
+    SwiperConfigInterface.prototype.thumbs;
+    /** @type {?|undefined} */
     SwiperConfigInterface.prototype.history;
     /** @type {?|undefined} */
     SwiperConfigInterface.prototype.virtual;
@@ -260,7 +279,7 @@ function SwiperConfigInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperA11YInterface() { }
-function SwiperA11YInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperA11YInterface.prototype.prevSlideMessage;
     /** @type {?|undefined} */
@@ -278,7 +297,7 @@ function SwiperA11YInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperLazyInterface() { }
-function SwiperLazyInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperLazyInterface.prototype.loadPrevNext;
     /** @type {?|undefined} */
@@ -298,7 +317,7 @@ function SwiperLazyInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperZoomInterface() { }
-function SwiperZoomInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperZoomInterface.prototype.maxRatio;
     /** @type {?|undefined} */
@@ -313,8 +332,20 @@ function SwiperZoomInterface_tsickle_Closure_declarations() {
 /**
  * @record
  */
+export function SwiperThumbsInterface() { }
+if (false) {
+    /** @type {?|undefined} */
+    SwiperThumbsInterface.prototype.swiper;
+    /** @type {?|undefined} */
+    SwiperThumbsInterface.prototype.slideThumbActiveClass;
+    /** @type {?|undefined} */
+    SwiperThumbsInterface.prototype.thumbsContainerClass;
+}
+/**
+ * @record
+ */
 export function SwiperHistoryInterface() { }
-function SwiperHistoryInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperHistoryInterface.prototype.replaceState;
     /** @type {?|undefined} */
@@ -324,11 +355,15 @@ function SwiperHistoryInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperVirtualInterface() { }
-function SwiperVirtualInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperVirtualInterface.prototype.slides;
     /** @type {?|undefined} */
     SwiperVirtualInterface.prototype.cache;
+    /** @type {?|undefined} */
+    SwiperVirtualInterface.prototype.addSliderBefore;
+    /** @type {?|undefined} */
+    SwiperVirtualInterface.prototype.addSliderAfter;
     /** @type {?|undefined} */
     SwiperVirtualInterface.prototype.renderSlide;
     /** @type {?|undefined} */
@@ -338,7 +373,7 @@ function SwiperVirtualInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperKeyboardInterface() { }
-function SwiperKeyboardInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperKeyboardInterface.prototype.enabled;
     /** @type {?|undefined} */
@@ -348,7 +383,7 @@ function SwiperKeyboardInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperAutoplayInterface() { }
-function SwiperAutoplayInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperAutoplayInterface.prototype.delay;
     /** @type {?|undefined} */
@@ -364,7 +399,7 @@ function SwiperAutoplayInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperScrollbarInterface() { }
-function SwiperScrollbarInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperScrollbarInterface.prototype.el;
     /** @type {?|undefined} */
@@ -380,7 +415,7 @@ function SwiperScrollbarInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperControllerInterface() { }
-function SwiperControllerInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperControllerInterface.prototype.control;
     /** @type {?|undefined} */
@@ -392,7 +427,7 @@ function SwiperControllerInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperNavigationInterface() { }
-function SwiperNavigationInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperNavigationInterface.prototype.nextEl;
     /** @type {?|undefined} */
@@ -408,7 +443,7 @@ function SwiperNavigationInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperPaginationInterface() { }
-function SwiperPaginationInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperPaginationInterface.prototype.el;
     /** @type {?|undefined} */
@@ -452,7 +487,7 @@ function SwiperPaginationInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperMousewheelInterface() { }
-function SwiperMousewheelInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperMousewheelInterface.prototype.forceToAxis;
     /** @type {?|undefined} */
@@ -468,7 +503,7 @@ function SwiperMousewheelInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperHashNavigationInterface() { }
-function SwiperHashNavigationInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperHashNavigationInterface.prototype.watchState;
     /** @type {?|undefined} */
@@ -478,7 +513,7 @@ function SwiperHashNavigationInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperFadeEffectInterface() { }
-function SwiperFadeEffectInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperFadeEffectInterface.prototype.crossFade;
 }
@@ -486,7 +521,7 @@ function SwiperFadeEffectInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperFlipEffectInterface() { }
-function SwiperFlipEffectInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperFlipEffectInterface.prototype.limitRotation;
     /** @type {?|undefined} */
@@ -496,7 +531,7 @@ function SwiperFlipEffectInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperCubeEffectInterface() { }
-function SwiperCubeEffectInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperCubeEffectInterface.prototype.shadow;
     /** @type {?|undefined} */
@@ -510,7 +545,7 @@ function SwiperCubeEffectInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperCoverflowEffectInterface() { }
-function SwiperCoverflowEffectInterface_tsickle_Closure_declarations() {
+if (false) {
     /** @type {?|undefined} */
     SwiperCoverflowEffectInterface.prototype.depth;
     /** @type {?|undefined} */
@@ -526,11 +561,6 @@ function SwiperCoverflowEffectInterface_tsickle_Closure_declarations() {
  * @record
  */
 export function SwiperBreakpointsInterface() { }
-function SwiperBreakpointsInterface_tsickle_Closure_declarations() {
-    /* TODO: handle strange member:
-    [size: number]: SwiperConfigInterface
-    */
-}
 var SwiperConfig = /** @class */ (function () {
     function SwiperConfig(config) {
         if (config === void 0) { config = {}; }
@@ -549,7 +579,7 @@ var SwiperConfig = /** @class */ (function () {
     function (config, target) {
         if (config === void 0) { config = {}; }
         target = target || this;
-        for (var /** @type {?} */ key in config) {
+        for (var key in config) {
             if (config[key] != null && !Array.isArray(config[key]) && typeof config[key] === 'object' &&
                 (typeof HTMLElement === 'undefined' || !(config[key] instanceof HTMLElement))) {
                 target[key] = {};
@@ -563,7 +593,9 @@ var SwiperConfig = /** @class */ (function () {
     return SwiperConfig;
 }());
 export { SwiperConfig };
-function SwiperConfig_tsickle_Closure_declarations() {
+if (false) {
+    /** @type {?} */
+    SwiperConfig.prototype.on;
     /** @type {?} */
     SwiperConfig.prototype.init;
     /** @type {?} */
@@ -613,6 +645,8 @@ function SwiperConfig_tsickle_Closure_declarations() {
     /** @type {?} */
     SwiperConfig.prototype.normalizeSlideIndex;
     /** @type {?} */
+    SwiperConfig.prototype.centerInsufficientSlides;
+    /** @type {?} */
     SwiperConfig.prototype.grabCursor;
     /** @type {?} */
     SwiperConfig.prototype.touchEventsTarget;
@@ -636,6 +670,10 @@ function SwiperConfig_tsickle_Closure_declarations() {
     SwiperConfig.prototype.allowTouchMove;
     /** @type {?} */
     SwiperConfig.prototype.threshold;
+    /** @type {?} */
+    SwiperConfig.prototype.touchStartPreventDefault;
+    /** @type {?} */
+    SwiperConfig.prototype.touchStartForcePreventDefault;
     /** @type {?} */
     SwiperConfig.prototype.touchMoveStopPropagation;
     /** @type {?} */
@@ -705,9 +743,13 @@ function SwiperConfig_tsickle_Closure_declarations() {
     /** @type {?} */
     SwiperConfig.prototype.breakpoints;
     /** @type {?} */
+    SwiperConfig.prototype.breakpointsInverse;
+    /** @type {?} */
     SwiperConfig.prototype.observer;
     /** @type {?} */
     SwiperConfig.prototype.observeParents;
+    /** @type {?} */
+    SwiperConfig.prototype.observeSlideChildren;
     /** @type {?} */
     SwiperConfig.prototype.containerModifierClass;
     /** @type {?} */

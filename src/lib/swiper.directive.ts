@@ -183,6 +183,9 @@ export class SwiperDirective implements AfterViewInit, OnDestroy, DoCheck, OnCha
   }
 
   ngOnDestroy(): void {
+  }
+
+  destroy(): void {
     if (this.instance) {
       this.zone.runOutsideAngular(() => {
         this.instance.destroy(true, this.instance.initialized || false);
@@ -199,7 +202,7 @@ export class SwiperDirective implements AfterViewInit, OnDestroy, DoCheck, OnCha
       if (changes) {
         this.initialIndex = this.getIndex(true);
 
-        this.ngOnDestroy();
+        this.destroy();
 
         this.ngAfterViewInit();
 
@@ -213,13 +216,13 @@ export class SwiperDirective implements AfterViewInit, OnDestroy, DoCheck, OnCha
       if (changes['disabled'].currentValue !== changes['disabled'].previousValue) {
         if (changes['disabled'].currentValue === true) {
           this.zone.runOutsideAngular(() => {
-            this.ngOnDestroy();
+            this.destroy();
 
             this.ngAfterViewInit();
           });
         } else if (changes['disabled'].currentValue === false) {
           this.zone.runOutsideAngular(() => {
-            this.ngOnDestroy();
+            this.destroy();
 
             this.ngAfterViewInit();
           });

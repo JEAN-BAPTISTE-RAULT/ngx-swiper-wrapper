@@ -154,6 +154,10 @@ export class SwiperComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+  }
+
+  destroy(): void {
+
     if (this.mo) {
       this.mo.disconnect();
     }

@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,20 +14,9 @@ var SwiperModule = /** @class */ (function () {
                     imports: [CommonModule],
                     declarations: [SwiperComponent, SwiperDirective],
                     exports: [CommonModule, SwiperComponent, SwiperDirective]
-                },] },
+                },] }
     ];
-    /** @nocollapse */
-    SwiperModule.ctorParameters = function () { return []; };
     return SwiperModule;
 }());
 export { SwiperModule };
-function SwiperModule_tsickle_Closure_declarations() {
-    /** @type {!Array<{type: !Function, args: (undefined|!Array<?>)}>} */
-    SwiperModule.decorators;
-    /**
-     * @nocollapse
-     * @type {function(): !Array<(null|{type: ?, decorators: (undefined|!Array<{type: !Function, args: (undefined|!Array<?>)}>)})>}
-     */
-    SwiperModule.ctorParameters;
-}
 //# sourceMappingURL=swiper.module.js.map
