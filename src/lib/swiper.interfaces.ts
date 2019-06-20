@@ -2,7 +2,18 @@ import { InjectionToken } from '@angular/core';
 
 export const SWIPER_CONFIG = new InjectionToken<SwiperConfigInterface>('SWIPER_CONFIG');
 
-export const SwiperEvents = [
+export type SwiperEvent = 'init' | 'beforeDestroy' | 'scroll' | 'progress' | 'keyPress' |
+  'resize' | 'breakpoint' | 'zoomChange' | 'beforeResize' | 'afterResize' | 'sliderMove' |
+  'slideChange' | 'setTranslate' | 'setTransition' | 'fromEdge' | 'reachEnd' | 'reachBeginning' |
+  'autoplay' | 'autoplayStop' | 'autoplayStart' | 'imagesReady' | 'lazyImageLoad' |
+  'lazyImageReady' | 'scrollDragEnd' | 'scrollDragMove' | 'scrollDragStart' | 'navigationHide' |
+  'navigationShow' | 'paginationRender' | 'paginationUpdate' | 'paginationHide' | 'paginationShow' |
+  'swiperTap' | 'swiperClick' | 'swiperDoubleTap' | 'swiperTouchEnd' | 'swiperTouchMove' |
+  'swiperTouchStart' | 'swiperTouchMoveOpposite' | 'swiperTransitionEnd' | 'swiperTransitionStart' |
+  'slideNextTransitionEnd' | 'slideNextTransitionStart' | 'slidePrevTransitionEnd' |
+  'slidePrevTransitionStart' | 'slideChangeTransitionEnd' | 'slideChangeTransitionStart';
+
+export const SwiperEvents: SwiperEvent[] = [
   'init',
   'beforeDestroy',
 
@@ -10,14 +21,12 @@ export const SwiperEvents = [
   'progress',
   'keyPress',
 
+  'resize',
+  'breakpoint',
+  'zoomChange',
   'beforeResize',
   'afterResize',
 
-  'resize',
-  'breakpoint',
-  'beforeResize',
-
-  'keyPress',
   'sliderMove',
   'slideChange',
 
@@ -39,6 +48,14 @@ export const SwiperEvents = [
   'scrollDragEnd',
   'scrollDragMove',
   'scrollDragStart',
+
+  'navigationHide',
+  'navigationShow',
+
+  'paginationRender',
+  'paginationUpdate',
+  'paginationHide',
+  'paginationShow',
 
   'swiperTap',
   'swiperClick',
@@ -86,6 +103,7 @@ export interface SwiperConfigInterface {
   slidesOffsetBefore?: number,
   slidesOffsetAfter?: number,
   normalizeSlideIndex?: boolean,
+  centerInsufficientSlides?: boolean,
 
   // Grab cursor
   grabCursor?: boolean,
@@ -102,6 +120,8 @@ export interface SwiperConfigInterface {
   followFinger?: boolean,
   allowTouchMove?: boolean,
   threshold?: number,
+  touchStartPreventDefault?: boolean,
+  touchStartForcePreventDefault?: boolean,
   touchMoveStopPropagation?: boolean,
   iOSEdgeSwipeDetection?: boolean,
   iOSEdgeSwipeThreshold?: number,
@@ -152,10 +172,12 @@ export interface SwiperConfigInterface {
 
   // Breakpoints
   breakpoints?: SwiperBreakpointsInterface,
+  breakpointsInverse?: boolean,
 
   // Observer
   observer?: boolean,
   observeParents?: boolean,
+  observeSlideChildren?: boolean,
 
   // Namespace
   containerModifierClass?: string,
@@ -182,6 +204,7 @@ export interface SwiperConfigInterface {
   a11y?: boolean | SwiperA11YInterface,
   lazy?: boolean | SwiperLazyInterface,
   zoom?: boolean | SwiperZoomInterface,
+  thumbs?: boolean | SwiperThumbsInterface,
   history?: boolean | SwiperHistoryInterface,
   virtual?: boolean | SwiperVirtualInterface,
   autoplay?: boolean | SwiperAutoplayInterface,
@@ -221,6 +244,12 @@ export interface SwiperZoomInterface {
   zoomedSlideClass?: string
 }
 
+export interface SwiperThumbsInterface {
+  swiper?: any,
+  slideThumbActiveClass?: string,
+  thumbsContainerClass?: string
+}
+
 export interface SwiperHistoryInterface {
   replaceState?: boolean,
   key?: string
@@ -229,6 +258,8 @@ export interface SwiperHistoryInterface {
 export interface SwiperVirtualInterface {
   slides?: any[],
   cache?: boolean,
+  addSliderBefore?: number,
+  addSliderAfter?: number,
   renderSlide?: SwiperRenderSlideFunction,
   renderExternal?: SwiperRenderExternalFunction
 }
@@ -332,139 +363,146 @@ export interface SwiperBreakpointsInterface {
 }
 
 export class SwiperConfig implements SwiperConfigInterface {
+  public on?: any;
+
   // Swiper parameters
-  public init: boolean;
-  public initialSlide: number;
-  public direction: string;
-  public speed: number;
-  public setWrapperSize: boolean;
-  public virtualTranslate: boolean;
-  public width: number;
-  public height: number;
-  public autoHeight: boolean;
-  public roundLengths: boolean;
-  public nested: boolean;
-  public uniqueNavElements: boolean;
-  public effect: string;
-  public runCallbacksOnInit: boolean;
-  public watchOverflow: boolean;
+  public init?: boolean;
+  public initialSlide?: number;
+  public direction?: string;
+  public speed?: number;
+  public setWrapperSize?: boolean;
+  public virtualTranslate?: boolean;
+  public width?: number;
+  public height?: number;
+  public autoHeight?: boolean;
+  public roundLengths?: boolean;
+  public nested?: boolean;
+  public uniqueNavElements?: boolean;
+  public effect?: string;
+  public runCallbacksOnInit?: boolean;
+  public watchOverflow?: boolean;
 
   // Slides grid
-  public spaceBetween: number;
-  public slidesPerView: number | 'auto';
-  public slidesPerColumn: number;
-  public slidesPerColumnFill: string;
-  public slidesPerGroup: number;
-  public centeredSlides: boolean;
-  public slidesOffsetBefore: number;
-  public slidesOffsetAfter: number;
-  public normalizeSlideIndex: boolean;
+  public spaceBetween?: number;
+  public slidesPerView?: number | 'auto';
+  public slidesPerColumn?: number;
+  public slidesPerColumnFill?: string;
+  public slidesPerGroup?: number;
+  public centeredSlides?: boolean;
+  public slidesOffsetBefore?: number;
+  public slidesOffsetAfter?: number;
+  public normalizeSlideIndex?: boolean;
+  public centerInsufficientSlides?: boolean;
 
   // Grab cursor
-  public grabCursor: boolean;
+  public grabCursor?: boolean;
 
   // Touches
-  public touchEventsTarget: string;
-  public touchRatio: number;
-  public touchAngle: number;
-  public simulateTouch: boolean;
-  public shortSwipes: boolean;
-  public longSwipes: boolean;
-  public longSwipesRatio: number;
-  public longSwipesMs: number;
-  public followFinger: boolean;
-  public allowTouchMove: boolean;
-  public threshold: number;
-  public touchMoveStopPropagation: boolean;
-  public iOSEdgeSwipeDetection: boolean;
-  public iOSEdgeSwipeThreshold: number;
-  public touchReleaseOnEdges: boolean;
-  public passiveListeners: boolean;
+  public touchEventsTarget?: string;
+  public touchRatio?: number;
+  public touchAngle?: number;
+  public simulateTouch?: boolean;
+  public shortSwipes?: boolean;
+  public longSwipes?: boolean;
+  public longSwipesRatio?: number;
+  public longSwipesMs?: number;
+  public followFinger?: boolean;
+  public allowTouchMove?: boolean;
+  public threshold?: number;
+  public touchStartPreventDefault?: boolean;
+  public touchStartForcePreventDefault?: boolean;
+  public touchMoveStopPropagation?: boolean;
+  public iOSEdgeSwipeDetection?: boolean;
+  public iOSEdgeSwipeThreshold?: number;
+  public touchReleaseOnEdges?: boolean;
+  public passiveListeners?: boolean;
 
   // Touch resistance
-  public resistance: boolean;
-  public resistanceRatio: number;
+  public resistance?: boolean;
+  public resistanceRatio?: number;
 
   // Swiping / no swiping
-  public preventInteractionOnTransition: boolean;
-  public allowSlidePrev: boolean;
-  public allowSlideNext: boolean;
-  public noSwiping: boolean;
-  public noSwipingClass: string;
-  public noSwipingSelector: string;
-  public swipeHandler: string | HTMLElement;
+  public preventInteractionOnTransition?: boolean;
+  public allowSlidePrev?: boolean;
+  public allowSlideNext?: boolean;
+  public noSwiping?: boolean;
+  public noSwipingClass?: string;
+  public noSwipingSelector?: string;
+  public swipeHandler?: string | HTMLElement;
 
   // Clicks
-  public preventClicks: boolean;
-  public preventClicksPropagation: boolean;
-  public slideToClickedSlide: boolean;
+  public preventClicks?: boolean;
+  public preventClicksPropagation?: boolean;
+  public slideToClickedSlide?: boolean;
 
   // Freemode
-  public freeMode: boolean;
-  public freeModeMomentum: boolean;
-  public freeModeMomentumRatio: number;
-  public freeModeMomentumVelocityRatio: number;
-  public freeModeMomentumBounce: boolean;
-  public freeModeMomentumBounceRatio: number;
-  public freeModeMinimumVelocity: number;
-  public freeModeSticky: boolean;
+  public freeMode?: boolean;
+  public freeModeMomentum?: boolean;
+  public freeModeMomentumRatio?: number;
+  public freeModeMomentumVelocityRatio?: number;
+  public freeModeMomentumBounce?: boolean;
+  public freeModeMomentumBounceRatio?: number;
+  public freeModeMinimumVelocity?: number;
+  public freeModeSticky?: boolean;
 
   // Progress
-  public watchSlidesProgress: boolean;
-  public watchSlidesVisibility: boolean;
+  public watchSlidesProgress?: boolean;
+  public watchSlidesVisibility?: boolean;
 
   // Images
-  public preloadImages: boolean;
-  public updateOnImagesReady: boolean;
+  public preloadImages?: boolean;
+  public updateOnImagesReady?: boolean;
 
   // Loop
-  public loop: boolean;
-  public loopAdditionalSlides: number;
-  public loopedSlides: number;
-  public loopFillGroupWithBlank: boolean;
+  public loop?: boolean;
+  public loopAdditionalSlides?: number;
+  public loopedSlides?: number;
+  public loopFillGroupWithBlank?: boolean;
 
   // Breakpoints
-  public breakpoints: any;
+  public breakpoints?: any;
+  public breakpointsInverse?: boolean;
 
   // Observer
-  public observer: boolean;
-  public observeParents: boolean;
+  public observer?: boolean;
+  public observeParents?: boolean;
+  public observeSlideChildren?: boolean;
 
   // Namespace
-  public containerModifierClass: string;
-  public slideClass: string;
-  public slideActiveClass: string;
-  public slideDuplicatedActiveClass: string;
-  public slideVisibleClass: string;
-  public slideDuplicateClass: string;
-  public slideNextClass: string;
-  public slideDuplicatedNextClass: string;
-  public slidePrevClass: string;
-  public slideDuplicatedPrevClass: string;
-  public wrapperClass: string;
+  public containerModifierClass?: string;
+  public slideClass?: string;
+  public slideActiveClass?: string;
+  public slideDuplicatedActiveClass?: string;
+  public slideVisibleClass?: string;
+  public slideDuplicateClass?: string;
+  public slideNextClass?: string;
+  public slideDuplicatedNextClass?: string;
+  public slidePrevClass?: string;
+  public slideDuplicatedPrevClass?: string;
+  public wrapperClass?: string;
 
   // Effects
-  public fadeEffect: any;
-  public flipEffect: any;
-  public cubeEffect: any;
-  public coverflowEffect: any;
+  public fadeEffect?: any;
+  public flipEffect?: any;
+  public cubeEffect?: any;
+  public coverflowEffect?: any;
 
   // Components
-  public parallax: boolean;
+  public parallax?: boolean;
 
-  public a11y: boolean | any;
-  public lazy: boolean | any;
-  public zoom: boolean | any;
-  public history: boolean | any;
-  public virtual: boolean | any;
-  public autoplay: boolean | any;
-  public keyboard: boolean | any;
-  public scrollbar: boolean | any;
-  public mousewheel: boolean | any;
-  public controller: boolean | any;
-  public navigation: boolean | any;
-  public pagination: boolean | any;
-  public hashNavigation: boolean | any;
+  public a11y?: boolean | any;
+  public lazy?: boolean | any;
+  public zoom?: boolean | any;
+  public history?: boolean | any;
+  public virtual?: boolean | any;
+  public autoplay?: boolean | any;
+  public keyboard?: boolean | any;
+  public scrollbar?: boolean | any;
+  public mousewheel?: boolean | any;
+  public controller?: boolean | any;
+  public navigation?: boolean | any;
+  public pagination?: boolean | any;
+  public hashNavigation?: boolean | any;
 
   constructor(config: SwiperConfigInterface = {}) {
     this.assign(config);
@@ -487,10 +525,10 @@ export class SwiperConfig implements SwiperConfigInterface {
   }
 }
 
-export type SwiperRenderSlideFunction = (index: number) => HTMLElement;
+export type SwiperRenderSlideFunction = (slide: any, index: number) => HTMLElement;
 export type SwiperRenderExternalFunction = (data: any) => void;
 
-export type SwiperRenderCustomFunction = (current: number, total: number) => string;
+export type SwiperRenderCustomFunction = (swiper: any, current: number, total: number) => string;
 
 export type SwiperRenderBulletFunction = (index: number, className: string) => string;
 export type SwiperRenderFractionFunction = (currentClass: string, totalClass: string) => string;

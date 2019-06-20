@@ -1,26 +1,24 @@
 import * as Swiper from 'swiper/dist/js/swiper.js';
 
+import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID,
-  Input, Output, EventEmitter,
-  AfterViewInit, DoCheck, OnDestroy, OnChanges,
-  Directive, NgZone, ElementRef, Optional, Inject,
+import { NgZone, Inject, Optional, ElementRef, Directive,
+  AfterViewInit, OnDestroy, DoCheck, OnChanges, Input, Output, EventEmitter,
   SimpleChanges, KeyValueDiffer, KeyValueDiffers } from '@angular/core';
 
-import { SWIPER_CONFIG } from './swiper.interfaces';
-
-import { SwiperEvents, SwiperConfig, SwiperConfigInterface } from './swiper.interfaces';
+import { SWIPER_CONFIG, SwiperConfig, SwiperConfigInterface,
+  SwiperEvent, SwiperEvents } from './swiper.interfaces';
 
 @Directive({
   selector: '[swiper]',
   exportAs: 'ngxSwiper'
 })
-export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnChanges {
+export class SwiperDirective implements AfterViewInit, OnDestroy, DoCheck, OnChanges {
   private instance: any;
 
-  private configDiff: KeyValueDiffer<string, any>;
+  private initialIndex: number | null = null;
 
-  private initialIndex: number;
+  private configDiff: KeyValueDiffer<string, any> | null = null;
 
   @Input()
   set index(index: number) {
@@ -31,7 +29,9 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
 
   @Input() disabled: boolean = false;
 
-  @Input('swiper') config: SwiperConfigInterface;
+  @Input() performance: boolean = false;
+
+  @Input('swiper') config?: SwiperConfigInterface;
 
   @Output() indexChange = new EventEmitter<number>();
 
@@ -40,12 +40,14 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
 
   @Output('scroll'                     ) S_SCROLL                         = new EventEmitter<any>();
   @Output('progress'                   ) S_PROGRESS                       = new EventEmitter<any>();
+  @Output('keyPress'                   ) S_KEYPRESS                       = new EventEmitter<any>();
 
   @Output('resize'                     ) S_RESIZE                         = new EventEmitter<any>();
   @Output('breakpoint'                 ) S_BREAKPOINT                     = new EventEmitter<any>();
+  @Output('zoomChange'                 ) S_ZOOMCHANGE                     = new EventEmitter<any>();
+  @Output('afterResize'                ) S_AFTERRESIZE                    = new EventEmitter<any>();
   @Output('beforeResize'               ) S_BEFORERESIZE                   = new EventEmitter<any>();
 
-  @Output('keyPress'                   ) S_KEYPRESS                       = new EventEmitter<any>();
   @Output('sliderMove'                 ) S_SLIDERMOVE                     = new EventEmitter<any>();
   @Output('slideChange'                ) S_SLIDECHANGE                    = new EventEmitter<any>();
 
@@ -68,6 +70,14 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
   @Output('scrollDragMove'             ) S_SCROLLDRAGMOVE                 = new EventEmitter<any>();
   @Output('scrollDragStart'            ) S_SCROLLDRAGSTART                = new EventEmitter<any>();
 
+  @Output('navigationHide'             ) S_NAVIGATIONHIDE                 = new EventEmitter<any>();
+  @Output('navigationShow'             ) S_NAVIGATIONSHOW                 = new EventEmitter<any>();
+
+  @Output('paginationRender'           ) S_PAGINATIONRENDER               = new EventEmitter<any>();
+  @Output('paginationUpdate'           ) S_PAGINATIONUPDATE               = new EventEmitter<any>();
+  @Output('paginationHide'             ) S_PAGINATIONHIDE                 = new EventEmitter<any>();
+  @Output('paginationShow'             ) S_PAGINATIONSHOW                 = new EventEmitter<any>();
+
   @Output('swiperTap'                  ) S_TAP                            = new EventEmitter<any>();
   @Output('swiperClick'                ) S_CLICK                          = new EventEmitter<any>();
   @Output('swiperDoubleTap'            ) S_DOUBLETAP                      = new EventEmitter<any>();
@@ -89,7 +99,7 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
     private elementRef: ElementRef, private differs: KeyValueDiffers,
     @Optional() @Inject(SWIPER_CONFIG) private defaults: SwiperConfigInterface) {}
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
@@ -128,13 +138,11 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
       this.initialIndex = null;
     }
 
-    params['on'] = {
+    params.on = {
       slideChange: () => {
-        this.zone.run(() => {
-          if (this.instance) {
-            this.indexChange.emit(this.instance.realIndex);
-          }
-        });
+        if (this.instance && this.indexChange.observers.length) {
+          this.emit(this.indexChange, this.instance.realIndex);
+        }
       }
     };
 
@@ -142,24 +150,27 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
       this.instance = new Swiper(this.elementRef.nativeElement, params);
     });
 
-    if (params.init !== false) {
-      this.S_INIT.emit(this.instance);
+    if (params.init !== false && this.S_INIT.observers.length) {
+      this.emit(this.S_INIT, this.instance);
     }
 
     // Add native Swiper event handling
-    SwiperEvents.forEach((eventName) => {
-      eventName = eventName.replace('swiper', '');
-      eventName = eventName.charAt(0).toLowerCase() + eventName.slice(1);
+    SwiperEvents.forEach((eventName: SwiperEvent) => {
+      let swiperEvent = eventName.replace('swiper', '');
 
-      this.instance.on(eventName, (...args) => {
+      swiperEvent = swiperEvent.charAt(0).toLowerCase() + swiperEvent.slice(1);
+
+      this.instance.on(swiperEvent, (...args: any[]) => {
         if (args.length === 1) {
           args = args[0];
         }
 
-        if (this[`S_${eventName.toUpperCase()}`]) {
-          this.zone.run(() => {
-            this[`S_${eventName.toUpperCase()}`].emit(args);
-          });
+        const output = `S_${swiperEvent.toUpperCase()}`;
+
+        const emitter = this[output as keyof SwiperDirective] as EventEmitter<any>;
+
+        if (emitter.observers.length) {
+          this.emit(emitter, args);
         }
       });
     });
@@ -171,27 +182,7 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
     }
   }
 
-  ngDoCheck() {
-    if (this.configDiff) {
-      const changes = this.configDiff.diff(this.config || {});
-
-      if (changes) {
-        this.initialIndex = this.getIndex(true);
-
-        this.destroy();
-
-        this.ngAfterViewInit();
-
-        this.update();
-      }
-    }
-  }
-
-  ngOnDestroy() {
-
-  }
-
-  destroy() {
+  ngOnDestroy(): void {
     if (this.instance) {
       this.zone.runOutsideAngular(() => {
         this.instance.destroy(true, this.instance.initialized || false);
@@ -201,18 +192,34 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngDoCheck(): void {
+    if (this.configDiff) {
+      const changes = this.configDiff.diff(this.config || {});
+
+      if (changes) {
+        this.initialIndex = this.getIndex(true);
+
+        this.ngOnDestroy();
+
+        this.ngAfterViewInit();
+
+        this.update();
+      }
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
     if (this.instance && changes['disabled']) {
       if (changes['disabled'].currentValue !== changes['disabled'].previousValue) {
         if (changes['disabled'].currentValue === true) {
           this.zone.runOutsideAngular(() => {
-            this.destroy();
+            this.ngOnDestroy();
 
             this.ngAfterViewInit();
           });
         } else if (changes['disabled'].currentValue === false) {
           this.zone.runOutsideAngular(() => {
-            this.destroy();
+            this.ngOnDestroy();
 
             this.ngAfterViewInit();
           });
@@ -221,11 +228,19 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
     }
   }
 
+  private emit(emitter: EventEmitter<any>, value: any): void {
+    if (this.performance) {
+      emitter.emit(value);
+    } else {
+      this.zone.run(() => emitter.emit(value));
+    }
+  }
+
   public swiper(): any {
     return this.instance;
   }
 
-  public init() {
+  public init(): void {
     if (this.instance) {
       this.zone.runOutsideAngular(() => {
         this.instance.init();
@@ -233,7 +248,7 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
     }
   }
 
-  public update() {
+  public update(): void {
     setTimeout(() => {
       if (this.instance) {
         this.zone.runOutsideAngular(() => {
@@ -243,15 +258,15 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
     }, 0);
   }
 
-  public getIndex(real?: boolean) {
+  public getIndex(real?: boolean): number {
     if (!this.instance) {
-      return this.initialIndex;
+      return this.initialIndex || 0;
     } else {
       return real ? this.instance.realIndex : this.instance.activeIndex;
     }
   }
 
-  public setIndex(index: number, speed?: number, silent?: boolean) {
+  public setIndex(index: number, speed?: number, silent?: boolean): void {
     if (!this.instance) {
       this.initialIndex = index;
     } else {
@@ -267,7 +282,7 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
     }
   }
 
-  public prevSlide(speed?: number, silent?: boolean) {
+  public prevSlide(speed?: number, silent?: boolean): void {
     if (this.instance) {
       this.zone.runOutsideAngular(() => {
         this.instance.slidePrev(speed, !silent);
@@ -275,7 +290,7 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
     }
   }
 
-  public nextSlide(speed?: number, silent?: boolean) {
+  public nextSlide(speed?: number, silent?: boolean): void {
     if (this.instance) {
       this.zone.runOutsideAngular(() => {
         this.instance.slideNext(speed, !silent);
@@ -283,7 +298,7 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
     }
   }
 
-  public stopAutoplay(reset?: boolean) {
+  public stopAutoplay(reset?: boolean): void {
     if (reset) {
       this.setIndex(0);
     }
@@ -295,7 +310,7 @@ export class SwiperDirective implements AfterViewInit, DoCheck, OnDestroy, OnCha
     }
   }
 
-  public startAutoplay(reset?: boolean) {
+  public startAutoplay(reset?: boolean): void {
     if (reset) {
       this.setIndex(0);
     }

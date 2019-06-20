@@ -18,13 +18,12 @@
     "eofline": true,
     "forin": false,
     "import-blacklist": [
-      true,
-      "rxjs"
+      true
     ],
     "ordered-imports": [
       true,
       {
-        "grouped-imports": true,
+        "grouped-imports": false,
         "import-sources-order": "any",
         "named-imports-order": "any"
       }
@@ -68,18 +67,13 @@
     "no-eval": true,
     "no-inferrable-types": false,
     "no-misused-new": true,
-    "no-non-null-assertion": true,
+    "no-non-null-assertion": false,
     "no-shadowed-variable": true,
     "no-string-literal": false,
     "no-string-throw": true,
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
-    "no-unused-variable": [
-      true,
-      {"ignore-pattern": "^_"}
-    ],
-    "no-use-before-declare": true,
     "no-var-keyword": true,
     "object-literal-sort-keys": false,
     "one-line": [
@@ -132,14 +126,17 @@
       "camelCase"
     ],
     "component-selector": [
-      false
+      true,
+      "element",
+      false,
+      "kebab-case"
     ],
-    "use-input-property-decorator": true,
-    "use-output-property-decorator": true,
-    "use-host-property-decorator": true,
+    "no-inputs-metadata-property": true,
+    "no-outputs-metadata-property": true,
+    "no-host-metadata-property": true,
     "no-input-rename": false,
     "no-output-rename": false,
-    "use-life-cycle-interface": true,
+    "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": false,
     "directive-class-suffix": false

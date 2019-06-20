@@ -26,6 +26,7 @@ export class AppComponent {
   public disabled: boolean = false;
 
   public config: SwiperConfigInterface = {
+    a11y: true,
     direction: 'horizontal',
     slidesPerView: 1,
     keyboard: true,
@@ -47,24 +48,24 @@ export class AppComponent {
     hideOnClick: false
   };
 
-  @ViewChild(SwiperComponent) componentRef: SwiperComponent;
-  @ViewChild(SwiperDirective) directiveRef: SwiperDirective;
+  @ViewChild(SwiperComponent, { static: false }) componentRef?: SwiperComponent;
+  @ViewChild(SwiperDirective, { static: false }) directiveRef?: SwiperDirective;
 
   constructor() {}
 
-  public toggleType() {
+  public toggleType(): void {
     this.type = (this.type === 'component') ? 'directive' : 'component';
   }
 
-  public toggleDisabled() {
+  public toggleDisabled(): void {
     this.disabled = !this.disabled;
   }
 
-  public toggleDirection() {
+  public toggleDirection(): void {
     this.config.direction = (this.config.direction === 'horizontal') ? 'vertical' : 'horizontal';
   }
 
-  public toggleSlidesPerView() {
+  public toggleSlidesPerView(): void {
     if (this.config.slidesPerView !== 1) {
       this.config.slidesPerView = 1;
     } else {
@@ -72,7 +73,7 @@ export class AppComponent {
     }
   }
 
-  public toggleOverlayControls() {
+  public toggleOverlayControls(): void {
     if (this.config.navigation) {
       this.config.scrollbar = false;
       this.config.navigation = false;
@@ -90,22 +91,26 @@ export class AppComponent {
       this.config.navigation = true;
     }
 
-    if (this.type === 'directive') {
+    if (this.type === 'directive' && this.directiveRef) {
       this.directiveRef.setIndex(0);
-    } else {
+    } else if (this.type === 'component' && this.componentRef && this.componentRef.directiveRef) {
       this.componentRef.directiveRef.setIndex(0);
     }
   }
 
-  public toggleKeyboardControl() {
+  public toggleKeyboardControl(): void {
     this.config.keyboard = !this.config.keyboard;
   }
 
-  public toggleMouseWheelControl() {
+  public toggleMouseWheelControl(): void {
     this.config.mousewheel = !this.config.mousewheel;
   }
 
-  public onIndexChange(index: number) {
+  public onIndexChange(index: number): void {
     console.log('Swiper index: ', index);
+  }
+
+  public onSwiperEvent(event: string): void {
+    console.log('Swiper event: ', event);
   }
 }
